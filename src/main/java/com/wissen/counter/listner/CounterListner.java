@@ -16,15 +16,19 @@ public class CounterListner {
     Long first=1000000L;
     Long last=2000000L;
 
+    public static final String host="http://localhost:";
+    public static final String counter = "/counter";
+    public static final Long incrementCount= 1000000L;
+
     @KafkaListener(groupId = "tinyurl-1", topics = "RequestCounter", containerFactory = "kafkaListenerContainerFactory")
     public void getMsgFromTopic(String data) {
         CounterRequest counterRequest = new CounterRequest();
         counterRequest.setFirst(first);
         counterRequest.setLast(last);
         first= last;
-        last= last+1000000L;
+        last= last+incrementCount;
         System.out.println(data);
-        String url = "http://localhost:"+ data + "/counter";
+        String url = host+ data + counter;
         template.postForObject(url, counterRequest, String.class);
     }
 
